@@ -9,12 +9,18 @@ class preProcess:
     
     def handle_missing_values(self):
         count = 0
+        missing_keys = set()
         for index, row in self.df.iterrows():
             for key in row.keys():
                 if row[key] == '?':
+                    missing_keys.add(key)
                     count+=1
                     self.df.at[index, key] = np.NAN
-        print("Changed ", count," missing values to -1")
+        for key in list(missing_keys):
+            self.df[key].fillna(self.df[key].median(), inplace=True)
+            self.df[key] = self.df[key].astype(int)
+
+        print("Changed ", count, " missing values to -1")
         print("----------------------------------------------")
 
     def find_missing_value_columns(self):
@@ -30,9 +36,12 @@ class preProcess:
         print(self.df[key].value_counts())
         plt.hist(self.df[key])
         plt.show()
+
+    def return_df(self):
+        return self.df
     
-    # def return_correlation_matrix(self):
-    #     return self.df.corr()
+    def return_correlation_matrix(self):
+        return self.df.corr()
 
     # def find_highly_correlated_features(self):
     #     corr_matrix = self.return_correlation_matrix()
@@ -47,7 +56,8 @@ class preProcess:
 if __name__ == '__main__':
     a = preProcess()
     a.handle_missing_values()
-    a.data_info()   
-    # print(a.return_correlation_matrix())
+    a.data_info()
+    a.return_correlation_matrix()
+    print(a.return_correlation_matrix())
     # print(a.find_missing_value_columns())
     # a.plot_histogram('bare_nuclei')
