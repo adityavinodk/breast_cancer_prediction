@@ -44,19 +44,18 @@ class knn:
 if __name__ == '__main__':
     preProcessData = preProcess()
     preProcessData.handle_missing_values()
-    # preProcessData.data_info()
     df = preProcessData.return_df()
-    KNN = knn(3, 'distance')
-    kFold = KFold(5, True, 1)
+    KNN = knn(5, 'uniform')
+    kFold = KFold(6, True, 1)
     values = df.values
     for train, test in kFold.split(values):
-        # print(train.shape, test.shape)
+        print("Taking %d train datapoints" % len(train))
         train_x, train_y = values[train][:,:-1], values[train][:,-1]
         test_x, test_y = values[test][:,:-1], values[test][:,-1]
-        # print(test_y)
         KNN.fit(train_x, train_y)
         pred_y = KNN.predict(test_x)
         results = testResults(pred_y, test_y)
         print("Accuracy of model is ", results.return_accuracy())
         print('F Score of model is ', results.return_fscore())
+        print()
         # print(KNN.predict_single(test_x[5]), test_y[5])

@@ -6,6 +6,7 @@ class preProcess:
     def __init__(self):
         self.df_object = fileReader()
         self.df = self.df_object.makeDataframe()
+        self.df.drop('code_number', axis=1, inplace=True)
     
     def handle_missing_values(self):
         count = 0
