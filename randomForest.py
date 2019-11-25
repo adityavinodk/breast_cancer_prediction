@@ -8,7 +8,10 @@ import numpy as np
 import operator
 
 class randomForest:
-    def __init__(self, criterion='entropy', n_trees=10 ,max_depth = None, min_samples_split=2, n_features='log2'):
+    def __init__(self, criterion='entropy', n_trees=10 ,max_depth = None, min_samples_split=2, n_features='full'):
+        # consists of a number of parameters
+        # n_features is the criteria on which number of features for a particular random decision tree is decided
+        # n_trees is the number of trees used for the bagging process
         np.random.seed(49)
         self.criterion = criterion
         self.max_depth = max_depth
@@ -18,18 +21,26 @@ class randomForest:
         self.trees = [None] * self.n_trees
         
     def fit(self, dataset):
+        # fit the dataset onto the model
         if self.n_features=='log2':
             self.n_features = int(np.log2(dataset.shape[1]-1))
         elif self.n_features=='sqrt':
             self.n_features = int(np.sqrt(dataset.shape[1]-1))
+        elif self.n_features=='full':
+            self.n_features = dataset.shape[1]-1
+        # we create n_trees number of random decision trees for the dataset
         for i in range(self.n_trees):
             self.trees[i] = self.buildTree(dataset)
         
     def buildTree(self, dataset):
+        # create a decision tree
         dt = decisionTree(self.criterion, self.max_depth, self.min_samples_split)
+        # randomly choose n samples 
         random_locations = np.random.permutation(len(dataset))
+        # randomly choose features 
         random_features = np.random.permutation(len(dataset[0])-1)[:self.n_features]
         new_dataset = []
+        # create a dataset with the following constraints
         for i in range(len(dataset)):
             if i in random_locations:
                 sample = dataset[i]
@@ -39,16 +50,19 @@ class randomForest:
                         newSample.append(sample[j])
                 newSample.append(sample[-1])
             new_dataset.append(newSample)
+        # fit the dataset onto the decision tree
         dt.fit(np.array(new_dataset))
         return dt
     
     def predict(self, groups):
+        #predict for group of samples
         results = []
         for group in groups:
             results.append(self.predict_single(group))
         return np.array(results)
     
     def predict_single(self, x):
+        # predict for single sample
         labelCounts = {2:0, 4:0}
         for dt in self.trees:
             labelCounts[dt.predict_single(x)]+=1

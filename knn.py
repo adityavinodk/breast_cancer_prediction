@@ -7,36 +7,49 @@ from testResults import testResults
 
 class knn:
     def __init__(self, k, weights):
+        # stores the value of k and distance measure as uniform or distance
         self.k = k
         if weights in ['uniform', 'distance']:
             self.weights = weights
     
     def fit(self, x, y):
+        # fit x and y as part of training set
         self.x = x
         self.y = y
         self.dataset_size = self.x.shape[0]
 
     def predict(self, groups):
+        # predict for groups of samples
         results = []
         for group in groups:
             results.append(self.predict_single(group))
         return np.array(results)
     
     def predict_single(self, x):
+        # predict a single sample
+
+        # Calculate distance measure and square it
         diff = np.tile(x, (self.dataset_size, 1)) - self.x
         sqDiff = diff**2
         distances = (sqDiff.sum(axis=1))**0.5
+        
+        # sort the distances in ascending order
         sortedDictIndices = distances.argsort()
-        # print(max(distances))
+        
         classCount = {}
+
+        # find the k closest neighbours for each sample
         for i in range(self.k):
             label = self.y[sortedDictIndices[i]]
+            # if distance measure is not unform, take weighted average of the nearest neighbours
             if self.weights == 'distance':
                 if label not in classCount: classCount[label] = 1
                 classCount[label] += 10**15/distances[sortedDictIndices[i]]
+            # if distance measure is unform, take mode of the nearest neighbours
             elif self.weights == 'uniform':
                 if label not in classCount: classCount[label] = 0
                 classCount[label] += 1
+        #find the class with highest weight after operation
         sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
         predVal = sortedClassCount[0][0]
         return predVal

@@ -1,5 +1,6 @@
 class testResults:
     def __init__(self, pred_y, y):
+        # stores all the necessary values for model comparison metrics
         self.pred_y = pred_y
         self.y = y
         self.true_positive = 0
@@ -17,15 +18,19 @@ class testResults:
         
     
     def return_accuracy(self):
+        # return accuracy
         return (self.true_positive+self.true_negative)/self.size
     
     def return_precision(self):
+        # return precision
         return self.true_positive/(self.true_positive + self.false_positive)
     
     def retrun_recall(self):
+        # return recall
         return self.true_positive/(self.true_positive + self.false_negative)
     
     def return_fscore(self):
+        # return fscore
         precision = self.true_positive/(self.true_positive + self.false_positive)
         recall = self.true_positive/(self.true_positive + self.false_negative)
         return 2*precision*recall/(precision+recall)
