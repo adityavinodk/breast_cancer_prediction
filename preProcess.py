@@ -61,6 +61,7 @@ class preProcess:
             if i[0] not in dropped:
                 self.df.drop(i[0], axis=1, inplace=True)
                 print(i[0], 'is dropped')
+        print("----------------------------------------------")
     
 if __name__ == '__main__':
     a = preProcess()
