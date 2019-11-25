@@ -1,5 +1,4 @@
 import numpy as np
-from collections import Counter
 import operator
 from preProcess import preProcess
 from sklearn.model_selection import KFold
@@ -44,6 +43,7 @@ class knn:
 if __name__ == '__main__':
     preProcessData = preProcess()
     preProcessData.handle_missing_values()
+    preProcessData.handle_highly_correlated_features()
     df = preProcessData.return_df()
     KNN = knn(5, 'uniform')
     kFold = KFold(6, True, 1)

@@ -44,15 +44,23 @@ class preProcess:
     def return_correlation_matrix(self):
         return self.df.corr()
 
-    # def find_highly_correlated_features(self):
-    #     corr_matrix = self.return_correlation_matrix()
-    #     correlated_features = []
-    #     features = self.df_object.return_features_list()
-    #     for i in range(len(corr_matrix)):
-    #         for j in range(0,i):
-    #             if abs(corr_matrix[features[i]][j]) > 0.9: 
-    #                 correlated_features.append((features[i], features[j]))
-    #     return correlated_features
+    def find_highly_correlated_features(self):
+        corr_matrix = self.return_correlation_matrix()
+        correlated_features = []
+        features = self.df_object.return_features_list()
+        features.remove('code_number')
+        for i in range(len(corr_matrix)):
+            for j in range(0,i):
+                if abs(corr_matrix[features[i]][j]) > 0.9: 
+                    correlated_features.append((features[i], features[j]))
+        return correlated_features
+    
+    def handle_highly_correlated_features(self):
+        dropped = []
+        for i in self.find_highly_correlated_features():
+            if i[0] not in dropped:
+                self.df.drop(i[0], axis=1, inplace=True)
+                print(i[0], 'is dropped')
     
 if __name__ == '__main__':
     a = preProcess()
@@ -60,5 +68,9 @@ if __name__ == '__main__':
     a.data_info()
     a.return_correlation_matrix()
     print(a.return_correlation_matrix())
+    print("Highly Correlated features are - ")
+    print(a.find_highly_correlated_features())
+    a.handle_highly_correlated_features()
+    a.data_info()
     # print(a.find_missing_value_columns())
     # a.plot_histogram('bare_nuclei')
