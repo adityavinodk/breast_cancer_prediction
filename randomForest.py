@@ -8,7 +8,7 @@ import numpy as np
 import operator
 
 class randomForest:
-    def __init__(self, criterion='entropy', n_trees=10 ,max_depth = None, min_samples_split=2, n_features='full'):
+    def __init__(self, criterion='entropy', n_trees=10 ,max_depth = None, min_samples_split=2, n_features='full', sample_size=300):
         # consists of a number of parameters
         # n_features is the criteria on which number of features for a particular random decision tree is decided
         # n_trees is the number of trees used for the bagging process
@@ -18,6 +18,7 @@ class randomForest:
         self.min_samples_split = min_samples_split
         self.n_features = n_features
         self.n_trees = n_trees
+        self.sample_size = sample_size
         self.trees = [None] * self.n_trees
         
     def fit(self, dataset):
@@ -36,7 +37,7 @@ class randomForest:
         # create a decision tree
         dt = decisionTree(self.criterion, self.max_depth, self.min_samples_split)
         # randomly choose n samples 
-        random_locations = np.random.permutation(len(dataset))
+        random_locations = np.random.permutation(len(dataset))[:self.sample_size]
         # randomly choose features 
         random_features = np.random.permutation(len(dataset[0])-1)[:self.n_features]
         new_dataset = []
@@ -49,7 +50,7 @@ class randomForest:
                     if j in random_features:
                         newSample.append(sample[j])
                 newSample.append(sample[-1])
-            new_dataset.append(newSample)
+                new_dataset.append(newSample)
         # fit the dataset onto the decision tree
         dt.fit(np.array(new_dataset))
         return dt
@@ -74,7 +75,7 @@ if __name__ == '__main__':
     preProcessData.handle_missing_values()
     preProcessData.handle_highly_correlated_features()
     df = preProcessData.return_df()
-    RF = randomForest(n_features='log2', n_trees=30)
+    RF = randomForest(n_features='log2', n_trees=30, sample_size=400)
     kFold = KFold(6, True, 1)
     values = df.values
     for train, test in kFold.split(values):
