@@ -2,6 +2,7 @@ import numpy as np
 import operator
 from preProcess import preProcess
 from sklearn.model_selection import KFold
+from sklearn.metrics import confusion_matrix
 from testResults import testResults
 
 class knn:
@@ -57,5 +58,6 @@ if __name__ == '__main__':
         results = testResults(pred_y, test_y)
         print("Accuracy of model is ", results.return_accuracy())
         print('F Score of model is ', results.return_fscore())
+        print("Confusion matrix: \n", confusion_matrix(test_y, pred_y))
         print()
         # print(KNN.predict_single(test_x[5]), test_y[5])

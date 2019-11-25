@@ -1,6 +1,7 @@
 from math import log
 from preProcess import preProcess
 from sklearn.model_selection import KFold
+from sklearn.metrics import confusion_matrix
 from collections import Counter
 from testResults import testResults
 import numpy as np
@@ -136,5 +137,6 @@ if __name__ == '__main__':
         results = testResults(pred_y, test_y)
         print("Accuracy of model is ", results.return_accuracy())
         print('F Score of model is ', results.return_fscore())
+        print("Confusion Matrix for the model :\n", confusion_matrix(test_y, pred_y))
         print()
         # print(DT.predict_single(test_x[0]), test_y[0])
