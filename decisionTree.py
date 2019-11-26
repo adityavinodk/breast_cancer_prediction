@@ -89,7 +89,7 @@ class decisionTree:
         probs = self.returnClassProbabilities(dataset)
         probs = sorted(self.returnClassProbabilities(dataset), reverse=True)
         # for the following conditions, the node stops building further and assigns class with highest count as definitiveLabel
-        if probs[0] > 90 or dataNode.depth == self.max_depth or len(dataset[0])<self.min_samples_split:
+        if probs[0] > 90 or dataNode.depth == self.max_depth or len(dataset)<self.min_samples_split:
             dataNode.assign_label(probs[0])
             return
 
